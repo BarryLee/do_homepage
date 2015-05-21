@@ -3,12 +3,14 @@ var port = process.env.PORT || 3000,
     fs = require('fs'),
     path = require('path'),
     mime = require('mime');
-//    html = fs.readFileSync('index.html');
 
 var log = function (entry) {
-    //fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
-    console.log(entry);
+    fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
 };
+
+var debug = function (entry) {
+    console.log(entry);
+}
 
 var send404 = function (response) {
     response.writeHead(404, {"Content-type": "text/plain"});
@@ -17,9 +19,6 @@ var send404 = function (response) {
 };
 
 var sendPage = function (response, filePath, fileContents) {
-    log(filePath);
-    log(path.basename(filePath));
-    log(mime.lookup(path.basename(filePath)));
     response.writeHead(200, {"Content-type": mime.lookup(path.basename(filePath))});
     response.end(fileContents);
 };
@@ -29,14 +28,14 @@ var serverWorking = function (response, absPath) {
         if (exists) {
             fs.readFile(absPath, function (err, data) {
                 if (err) {
-                    log("Error occured" + err);
+                    log("Error occured: " + err);
                     send404(response);
                 } else {
                     sendPage(response, absPath, data);
                 }
             });
         } else {
-            log("Request for non-existing resource: " + absPath);
+            log("Request for non-existent resource: " + absPath);
             send404(response);
         }
     })

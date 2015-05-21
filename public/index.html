@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <title>Du Zhifang</title>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <style>
@@ -45,8 +46,12 @@
         border-radius: 60px;
     }
 
+    div#message {
+        margin-top: 30px;
+    }
+
     div#message>span {
-        color: rgb(52,52,52);
+        color: rgb(102,88,88);
         font-size: 3em;
     }
     </style>
@@ -65,6 +70,17 @@
 <script>
 $(function () {
     $('.vcenter').css("marginTop", "150px");
+    var colors = [
+        'rgb(107, 133, 163)',
+        'rgb(140, 157, 90)',
+        'rgb(229, 148, 0)',
+        'rgb(247, 190, 86)',
+        'rgb(255, 222, 162)',
+        'rgb(245, 238, 199)',
+    ];
+    $('#message i').each(function (idx, elem) {
+        $(elem).css("color", colors[idx]);
+    });
 });
 </script>
   </body>
