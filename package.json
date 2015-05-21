@@ -1,0 +1,11 @@
+{
+  "name": "Do-Homepage",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "mime": "~1.2.7"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}

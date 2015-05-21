@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Du Zhifang</title>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <style>
+    body {
+        margin: 0 8px;
+        font-family: sans-serif;
+    }
+
+    .center {
+        display: block;
+        margin: 0 auto;
+    }
+
+    div.title {
+        width: 500px;
+        text-align: center;
+        line-height: 90px;
+    }
+
+    div.title>span {
+        vertical-align: baseline;
+        margin: 7px;
+    }
+
+    span#name_en {
+        color: gray;
+        font-size: 3em;
+    }
+
+    span#name_cn {
+        font-size: 1.5em;
+    }
+
+    div#photo {
+        background-color: rgb(231,231,231);
+        padding: 30px 0;
+        margin: 0 -8px;
+    }
+
+    div#photo>img {
+        width: 120px;
+        border-radius: 60px;
+    }
+
+    div#message>span {
+        color: rgb(52,52,52);
+        font-size: 3em;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="name" class="title center vcenter">
+      <span id="name_en">Du Zhifang</span>
+      <span id="name_cn">杜 治方</span>
+    </div>
+    <div id="photo">
+      <img class="center" src="photo.jpg"/>
+    </div>
+    <div id="message" class="title center">
+      <span>Com<i>i</i><i>ng</i> <i>so</i><i>on</i><i>.</i><i>..</i></span>
+    </div>
+<script>
+$(function () {
+    $('.vcenter').css("marginTop", "150px");
+});
+</script>
+  </body>
+</html>
