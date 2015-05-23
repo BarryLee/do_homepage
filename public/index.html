@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Du Zhifang</title>
     <link href="custom-font.css" rel="stylesheet" type="text/css">
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
@@ -18,9 +19,9 @@
     }
 
     div.title {
-        width: 500px;
+        width: auto;
         text-align: center;
-        line-height: 90px;
+        line-height: 5.5em;
     }
 
     div.title>span {
@@ -56,6 +57,21 @@
         color: rgb(102,88,88);
         font-size: 3em;
     }
+
+    @media (max-width: 640px) {
+        span#name_en {
+            font-size: 2em;
+        }
+
+        span#name_cn {
+            font-size: 1em;
+        }
+
+        div#message>span {
+            font-size: 2em;
+        }
+    }
+
     </style>
   </head>
   <body>
