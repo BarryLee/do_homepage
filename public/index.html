@@ -71,7 +71,18 @@
     </div>
 <script>
 $(function () {
-    $('.vcenter').css("marginTop", "150px");
+    function placeContent() {
+      var winHeight = $(window).height();
+      var contentHeight = $('body').height();
+      var offsetTop = (winHeight - contentHeight)/2 - 70;
+      offsetTop = Math.min(150, Math.max(0, offsetTop));
+      $('.vcenter').css("marginTop", offsetTop + "px");
+    }
+
+    placeContent();
+
+    $(window).on('resize', placeContent);
+
     var colors = [
         'rgb(107, 133, 163)',
         'rgb(140, 157, 90)',
