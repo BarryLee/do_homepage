@@ -18,22 +18,101 @@ var send404 = function (response) {
     response.end();
 };
 
-var sendPage = function (response, filePath, fileContents) {
-    response.writeHead(200, {"Content-type": mime.lookup(path.basename(filePath))});
+var send304 = function (response) {
+    response.writeHead(304);
+    response.end();
+};
+
+var sendResponse = function (request, response, filePath, fileContents, stat) {
+    var imsHeader = request.headers['if-modified-since'];
+    var mtime = new Date(stat.mtime).toGMTString();
+    if (imsHeader && mtime == imsHeader) {
+        send304(response);
+    } else {
+        sendPage(response, filePath, fileContents, stat);
+    }
+};
+
+var sendPage = function (response, filePath, fileContents, stat) {
+    var header = constructHeader(filePath, stat);
+    response.writeHead(200, header);
     response.end(fileContents);
 };
 
-var serverWorking = function (response, absPath) {
+var constructHeader = function (filePath, stat) {
+    var header = {};
+
+    var mimeType = mime.lookup(path.basename(filePath));
+
+    if ('application/x-font-ttf' == mimeType) {
+        header["Cache-Control"] = "max-age=31536000";
+    } else if (0 == mimeType.indexOf('image/')) {
+        header["Cache-Control"] = "max-age=7200";
+    } else if ('text/css' == mimeType) {
+        header["Cache-Control"] = "max-age=600";
+    }
+
+    header['Last-Modified'] = new Date(stat.mtime).toGMTString();
+
+    header['Content-type'] = mimeType;
+
+    return header;
+};
+
+var parallel = function (tasks, onComplete) {
+    var results = {};
+    var errors = [];
+    var completed = 0;
+    var numTasks = Object.keys(tasks).length;
+
+    function fin(err) {
+        if (err) {
+            log("Error occured: " + err);
+            errors.push(err);
+        }
+        completed++;
+        if (completed >= numTasks) {
+            onComplete(errors, results);
+        }
+    }
+
+    for (var k in tasks) {
+        tasks[k]((function (k, err, data) {
+            return function (err, data) {
+                if (err) {
+                    fin(err);
+                } else {
+                    results[k] = data;
+                    fin(null);
+                }
+            }
+        })(k));
+    }
+};
+
+var serverWorking = function (request, response, absPath) {
     fs.exists(absPath, function (exists) {
         if (exists) {
-            fs.readFile(absPath, function (err, data) {
-                if (err) {
-                    log("Error occured: " + err);
-                    send404(response);
-                } else {
-                    sendPage(response, absPath, data);
+            parallel({
+                'stat': function (cb) {
+                        fs.stat(absPath, cb);
+                    },
+                'readFile': function (cb) {
+                        fs.readFile(absPath, cb);
+                    }
+                },
+                function (errors, results) {
+                    if (errors.length) {
+                        log("Error occured: " + errors[0]);
+                        send404(response);
+                    } else {
+                        var fileContents = results['readFile'];
+                        var stat = results['stat'];
+
+                        sendResponse(request, response, absPath, fileContents, stat);
+                    }
                 }
-            });
+            );
         } else {
             log("Request for non-existent resource: " + absPath);
             send404(response);
@@ -53,7 +132,7 @@ var server = http.createServer(function (request, response) {
     }
 
     var absPath = "./" + filePath;
-    serverWorking(response, absPath);
+    serverWorking(request, response, absPath);
 });
 
 // Listen on port 3000, IP defaults to 127.0.0.1
